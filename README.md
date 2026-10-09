@@ -124,7 +124,7 @@ Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for 
 
 FlexStock now keeps an append-only audit trail for sensitive actions including users, categories, products, stock movements, sales, and settings. Failed authentication, permission denials, and blocked destructive actions are also recorded as security incidents so administrators can trace suspicious activity.
 
-For security vulnerabilities, please see [SECURITY.md](./SECURITY.md) — **do not open a public issue**.
+For security vulnerabilities, please see [SECURITY.md](./SECURITY.md) .
 
 ---
 
