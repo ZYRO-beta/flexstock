@@ -15,11 +15,12 @@ All environment variables used by FlexStock, explained.
 
 ## Database
 
-| Variable | Required | Description |
-|---|---|---|
-| `DATABASE_URL` | Yes | Full PostgreSQL connection string |
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `POSTGRES_PORT` | No | `5433` | Host port mapped to the PostgreSQL Docker container |
+| `DATABASE_URL` | Yes | - | Full PostgreSQL connection string |
 
-Example: `postgresql://user:password@localhost:5432/flexstock`
+Example: `postgresql://postgres:postgres_secure_password@localhost:5433/flexstock?schema=public`
 
 ## Authentication
 

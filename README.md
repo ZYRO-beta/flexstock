@@ -1,6 +1,6 @@
 # FlexStock
 
-[![CI](https://github.com/ilyaskhan12Q/flexstock/actions/workflows/ci.yml/badge.svg)](https://github.com/ilyaskhan12Q/flexstock/actions/workflows/ci.yml)
+[![CI](https://github.com/ZYRO-beta/flexstock/actions/workflows/ci.yml/badge.svg)](https://github.com/ZYRO-beta/flexstock/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
@@ -34,54 +34,88 @@
 
 ## Quick Start
 
-### Option A — Docker (Recommended)
+### Option A — Local Development (Dev Server)
 
 ```bash
-git clone https://github.com/ilyaskhan12Q/flexstock.git
+git clone https://github.com/ZYRO-beta/flexstock.git
 cd flexstock
 cp .env.example .env
-# Edit .env with your APP_NAME, DB credentials, and JWT secrets
-docker-compose up -d
+
+# 1. Spin up PostgreSQL in Docker
+docker compose up -d postgres
+
+# 2. Run migrations & seed data (first time only)
+npm run prisma:migrate
+npm run prisma:seed
+
+# 3. Start client and server concurrently
+npm run dev
+```
+
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:3000
+
+To stop the running application:
+- Terminate the dev server: `Ctrl + C`
+- Stop the database container: `docker compose stop postgres`
+
+### Option B — Automated Install (VPS / Linux Server)
+
+```bash
+git clone https://github.com/ZYRO-beta/flexstock.git
+cd flexstock
+cp .env.example .env
+# Edit .env as needed
+./install.sh
+```
+
+The install script handles dependency installation, database container creation, schema migrations, seeding, and frontend bundle building.
+
+### Option C — Full Docker Containerized Stack
+
+```bash
+git clone https://github.com/ZYRO-beta/flexstock.git
+cd flexstock
+cp .env.example .env
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 App runs at **http://localhost:3000**
 
-Default credentials after seed:
-- Admin: `admin@flexstock.com` / `admin123`
-- Manager: `manager@flexstock.com` / `manager123`
-- Staff: `staff@flexstock.com` / `staff123`
+---
 
-> WARNING: Change all passwords immediately after first login.
+### Default Credentials (After Seeding)
 
-### Option B — Manual Install (VPS / Linux Server)
+- **Admin**: `admin@flexstock.com` / `admin123`
+- **Manager**: `manager@flexstock.com` / `manager123`
+- **Staff**: `staff@flexstock.com` / `staff123`
 
-```bash
-git clone https://github.com/ilyaskhan12Q/flexstock.git
-cd flexstock
-cp .env.example .env
-# Edit .env
-./install.sh
-```
-
-The install script handles: npm install, prisma migrate, seeding, and frontend build.
+> [!WARNING]
+> Change all passwords immediately after first login in production environments.
 
 ---
 
-## Docker Setup
-
-Full stack (PostgreSQL + API + Frontend):
+## Docker & Database Management
 
 ```bash
-docker-compose up -d          # Start all services
-docker-compose logs -f server # Follow server logs
-docker-compose down           # Stop all services
+# Start PostgreSQL database service
+docker compose up -d postgres
+
+# Check database container status & logs
+docker compose ps
+docker compose logs -f postgres
+
+# Stop PostgreSQL database service
+docker compose stop postgres
+
+# Stop and remove containers and network
+docker compose down
 ```
 
-Production deployment:
-
-```bash
-docker-compose -f docker-compose.prod.yml up -d
-```
+> [!TIP]
+> **PostgreSQL Port Conflict (5432 vs 5433)**:
+> If your host machine already runs another PostgreSQL service on port `5432`, FlexStock maps the database container to host port **`5433`** by default (`POSTGRES_PORT=5433` in `docker-compose.yml` and `.env`).
+> If you prefer using `5432`, set `POSTGRES_PORT=5432` and update `DATABASE_URL` in `.env` accordingly.
 
 ---
 
@@ -90,11 +124,22 @@ docker-compose -f docker-compose.prod.yml up -d
 All configuration is done via `.env`. Copy `.env.example` and edit:
 
 ```env
-APP_NAME="My Pharmacy"       # Shown in header and reports
+APP_NAME="FlexStock"
+APP_URL=http://localhost:3000
 PORT=3000
-DATABASE_URL=postgresql://...
-JWT_SECRET=your-long-secret
-CURRENCY_SYMBOL=PKR
+NODE_ENV=development
+
+# Database (Default host port: 5433)
+POSTGRES_PORT=5433
+DATABASE_URL="postgresql://postgres:postgres_secure_password@localhost:5433/flexstock?schema=public"
+
+# Auth Secrets
+JWT_SECRET="super-secret-flexstock-jwt-key"
+REFRESH_TOKEN_SECRET="super-secret-flexstock-refresh-key"
+
+# Locale & Currency
+CURRENCY_SYMBOL="PKR"
+DATE_FORMAT="DD/MM/YYYY"
 ```
 
 See [docs/configuration.md](./docs/configuration.md) for all available variables.

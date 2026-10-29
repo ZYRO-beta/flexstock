@@ -14,7 +14,7 @@ To deploy FlexStock as a full-stack containerized application in production, we 
 ### Steps:
 1. Clone the repository on your server:
    ```bash
-   git clone https://github.com/ilyaskhan12Q/flexstock.git
+   git clone https://github.com/ZYRO-beta/flexstock.git
    cd flexstock
    ```
 2. Copy and configure the environment variables:
@@ -46,7 +46,7 @@ If you are not using Docker containers for the app itself, you can deploy it dir
 ### Steps:
 1. Clone and prepare environment variables:
    ```bash
-   git clone https://github.com/ilyaskhan12Q/flexstock.git
+   git clone https://github.com/ZYRO-beta/flexstock.git
    cd flexstock
    cp .env.example .env
    ```
